@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repository Catalogue – misterplusev</title>
+    <title>Repository Catalogue</title>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -21,6 +21,7 @@
             margin: 0;
             display: flex;
             height: 100vh;
+            overflow: hidden;
         }
         aside {
             width: 300px;
@@ -33,49 +34,70 @@
         main {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 40px;
+            padding: 20px;
         }
-        h1, h2, h3 { color: #ffffff; }
-        a { color: var(--accent-color); text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        h1, h2, h3 { color: #ffffff; margin-top: 0; }
         .repo-link {
             display: block;
-            padding: 8px 12px;
-            margin-bottom: 4px;
+            padding: 12px;
+            margin-bottom: 5px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 15px;
+            cursor: pointer;
+            color: var(--text-color);
+            border: 1px solid transparent;
         }
-        .repo-link:hover { background-color: var(--hover-bg); }
-        .repo-section {
-            margin-bottom: 60px;
+        .repo-link:hover {
+            background-color: var(--hover-bg);
+        }
+        .repo-link.active {
+            background-color: var(--hover-bg);
+            color: var(--accent-color);
+            font-weight: bold;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background-color: var(--sidebar-bg);
-            padding: 24px;
+        }
+        .repo-section {
+            display: none;
+        }
+        .repo-section.active {
+            display: block;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             font-size: 13px;
+            table-layout: fixed;
         }
         th, td {
             text-align: left;
-            padding: 12px;
+            padding: 10px;
             border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            word-wrap: break-word;
         }
-        th { background-color: var(--bg-color); color: #ffffff; }
-        .file-path { font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace; }
+        th:nth-child(1) { width: 30%; }
+        th:nth-child(2) { width: 10%; }
+        th:nth-child(3) { width: 60%; }
+        th { background-color: var(--sidebar-bg); color: #ffffff; position: sticky; top: 0; z-index: 10; }
+        .file-path { font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace; color: var(--accent-color); }
         .file-summary { color: #8b949e; }
-        .timestamp { font-size: 12px; opacity: 0.6; margin-top: 10px; }
         .search-box {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 20px;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
             border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            aside { width: 100%; height: 35vh; border-right: none; border-bottom: 1px solid var(--border-color); box-sizing: border-box; }
+            main { height: 65vh; padding: 15px; box-sizing: border-box; }
         }
     </style>
 </head>
@@ -84,18 +106,21 @@
         <h3>Repositories</h3>
         <input type="text" class="search-box" placeholder="Search repos..." onkeyup="filterRepos(this.value)">
         <div id="repo-list">
-            <a href="#abet" class="repo-link">abet</a><a href="#abet-homepage-schedule-widget" class="repo-link">abet-homepage-schedule-widget</a><a href="#abet-live-board-dashboard" class="repo-link">abet-live-board-dashboard</a><a href="#abet-live-board-receiver" class="repo-link">abet-live-board-receiver</a><a href="#abet-live-board-scrapers" class="repo-link">abet-live-board-scrapers</a><a href="#abet-live-odds-module" class="repo-link">abet-live-odds-module</a><a href="#abet-mlb-forecaster" class="repo-link">abet-mlb-forecaster</a><a href="#abet-mlb-monitor-widgets" class="repo-link">abet-mlb-monitor-widgets</a><a href="#abet-mlb-proxy" class="repo-link">abet-mlb-proxy</a><a href="#abet-stats-monitor" class="repo-link">abet-stats-monitor</a><a href="#abet-tasks" class="repo-link">abet-tasks</a><a href="#abet-theoddsapi-proxy" class="repo-link">abet-theoddsapi-proxy</a><a href="#kalshi-poly-bot" class="repo-link">kalshi-poly-bot</a><a href="#mlb_api" class="repo-link">mlb_api</a><a href="#public-feeds" class="repo-link">public-feeds</a><a href="#script-dump" class="repo-link">script-dump</a><a href="#sportsbook-jobs-dashboard" class="repo-link">sportsbook-jobs-dashboard</a><a href="#v20-causal-analytics" class="repo-link">v20-causal-analytics</a><a href="#v20-cctv-uplink" class="repo-link">v20-cctv-uplink</a><a href="#v20-pipeline-viz" class="repo-link">v20-pipeline-viz</a><a href="#v20-telemetry-monitor" class="repo-link">v20-telemetry-monitor</a><a href="#v20-terminal-coordinator" class="repo-link">v20-terminal-coordinator</a><a href="#v20-weather-widget" class="repo-link">v20-weather-widget</a><a href="#weather-widget" class="repo-link">weather-widget</a>
+            <div class="repo-link" onclick="showRepo('abet', this)">abet</div><div class="repo-link" onclick="showRepo('abet-homepage-schedule-widget', this)">abet-homepage-schedule-widget</div><div class="repo-link" onclick="showRepo('abet-live-board-dashboard', this)">abet-live-board-dashboard</div><div class="repo-link" onclick="showRepo('abet-live-board-receiver', this)">abet-live-board-receiver</div><div class="repo-link" onclick="showRepo('abet-live-board-scrapers', this)">abet-live-board-scrapers</div><div class="repo-link" onclick="showRepo('abet-live-odds-module', this)">abet-live-odds-module</div><div class="repo-link" onclick="showRepo('abet-mlb-forecaster', this)">abet-mlb-forecaster</div><div class="repo-link" onclick="showRepo('abet-mlb-monitor-widgets', this)">abet-mlb-monitor-widgets</div><div class="repo-link" onclick="showRepo('abet-mlb-proxy', this)">abet-mlb-proxy</div><div class="repo-link" onclick="showRepo('abet-stats-monitor', this)">abet-stats-monitor</div><div class="repo-link" onclick="showRepo('abet-tasks', this)">abet-tasks</div><div class="repo-link" onclick="showRepo('abet-theoddsapi-proxy', this)">abet-theoddsapi-proxy</div><div class="repo-link" onclick="showRepo('kalshi-poly-bot', this)">kalshi-poly-bot</div><div class="repo-link" onclick="showRepo('mlb_api', this)">mlb_api</div><div class="repo-link" onclick="showRepo('public-feeds', this)">public-feeds</div><div class="repo-link" onclick="showRepo('script-dump', this)">script-dump</div><div class="repo-link" onclick="showRepo('sportsbook-jobs-dashboard', this)">sportsbook-jobs-dashboard</div><div class="repo-link" onclick="showRepo('v20-causal-analytics', this)">v20-causal-analytics</div><div class="repo-link" onclick="showRepo('v20-cctv-uplink', this)">v20-cctv-uplink</div><div class="repo-link" onclick="showRepo('v20-pipeline-viz', this)">v20-pipeline-viz</div><div class="repo-link" onclick="showRepo('v20-telemetry-monitor', this)">v20-telemetry-monitor</div><div class="repo-link" onclick="showRepo('v20-terminal-coordinator', this)">v20-terminal-coordinator</div><div class="repo-link" onclick="showRepo('v20-weather-widget', this)">v20-weather-widget</div><div class="repo-link" onclick="showRepo('weather-widget', this)">weather-widget</div>
         </div>
     </aside>
     <main>
-        <h1>Repository Catalogue</h1>
-        <div class="timestamp">Generated on 2026-04-23 14:31:34</div>
-        <p>A comprehensive inventory of <b>24</b> repositories.</p>
+        <div id="welcome" style="text-align: center; margin-top: 50px;">
+            <h1>Repository Catalogue</h1>
+            <p style="color: var(--accent-color);">Generated on 2026-04-23 18:26:12</p>
+            <p><b>Please tap a repository from the list to view its files and summaries.</b></p>
+        </div>
 
         
         <section id="abet" class="repo-section">
             <h2>abet</h2>
             <p><i>ABET - Sports Betting Odds Scraper System</i></p>
+            <p style="color: var(--accent-color);"><b>2738 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -113,6 +138,7 @@
         <section id="abet-homepage-schedule-widget" class="repo-section">
             <h2>abet-homepage-schedule-widget</h2>
             <p><i>Homepage Schedule Widget</i></p>
+            <p style="color: var(--accent-color);"><b>1217 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -130,6 +156,7 @@
         <section id="abet-live-board-dashboard" class="repo-section">
             <h2>abet-live-board-dashboard</h2>
             <p><i>React + Vite</i></p>
+            <p style="color: var(--accent-color);"><b>204 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -147,6 +174,7 @@
         <section id="abet-live-board-receiver" class="repo-section">
             <h2>abet-live-board-receiver</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>37 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -164,6 +192,7 @@
         <section id="abet-live-board-scrapers" class="repo-section">
             <h2>abet-live-board-scrapers</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>0 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -181,6 +210,7 @@
         <section id="abet-live-odds-module" class="repo-section">
             <h2>abet-live-odds-module</h2>
             <p><i>ABET Live Odds Module</i></p>
+            <p style="color: var(--accent-color);"><b>2403 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -198,6 +228,7 @@
         <section id="abet-mlb-forecaster" class="repo-section">
             <h2>abet-mlb-forecaster</h2>
             <p><i>ABET MLB Forecaster</i></p>
+            <p style="color: var(--accent-color);"><b>34 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -215,6 +246,7 @@
         <section id="abet-mlb-monitor-widgets" class="repo-section">
             <h2>abet-mlb-monitor-widgets</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>1353 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -232,6 +264,7 @@
         <section id="abet-mlb-proxy" class="repo-section">
             <h2>abet-mlb-proxy</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>3 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -249,6 +282,7 @@
         <section id="abet-stats-monitor" class="repo-section">
             <h2>abet-stats-monitor</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>2 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -266,6 +300,7 @@
         <section id="abet-tasks" class="repo-section">
             <h2>abet-tasks</h2>
             <p><i>ABET Project Task Tracker</i></p>
+            <p style="color: var(--accent-color);"><b>1 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -283,6 +318,7 @@
         <section id="abet-theoddsapi-proxy" class="repo-section">
             <h2>abet-theoddsapi-proxy</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>5 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -300,6 +336,7 @@
         <section id="kalshi-poly-bot" class="repo-section">
             <h2>kalshi-poly-bot</h2>
             <p><i>ABET - Sports Betting Odds Scraper System</i></p>
+            <p style="color: var(--accent-color);"><b>2714 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -317,6 +354,7 @@
         <section id="mlb_api" class="repo-section">
             <h2>mlb_api</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>0 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -334,6 +372,7 @@
         <section id="public-feeds" class="repo-section">
             <h2>public-feeds</h2>
             <p><i>Public Feeds · Multi‑Venue Camera Widget</i></p>
+            <p style="color: var(--accent-color);"><b>13 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -351,6 +390,7 @@
         <section id="script-dump" class="repo-section">
             <h2>script-dump</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>1032 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -368,6 +408,7 @@
         <section id="sportsbook-jobs-dashboard" class="repo-section">
             <h2>sportsbook-jobs-dashboard</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>77 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -385,6 +426,7 @@
         <section id="v20-causal-analytics" class="repo-section">
             <h2>v20-causal-analytics</h2>
             <p><i>Causal Analytics Module (Dual-Mode 3D)</i></p>
+            <p style="color: var(--accent-color);"><b>3 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -402,6 +444,7 @@
         <section id="v20-cctv-uplink" class="repo-section">
             <h2>v20-cctv-uplink</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>1 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -419,6 +462,7 @@
         <section id="v20-pipeline-viz" class="repo-section">
             <h2>v20-pipeline-viz</h2>
             <p><i>Pipeline Visualization Module</i></p>
+            <p style="color: var(--accent-color);"><b>2 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -436,6 +480,7 @@
         <section id="v20-telemetry-monitor" class="repo-section">
             <h2>v20-telemetry-monitor</h2>
             <p><i>Telemetry Monitor Module</i></p>
+            <p style="color: var(--accent-color);"><b>3 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -453,6 +498,7 @@
         <section id="v20-terminal-coordinator" class="repo-section">
             <h2>v20-terminal-coordinator</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>45 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -470,6 +516,7 @@
         <section id="v20-weather-widget" class="repo-section">
             <h2>v20-weather-widget</h2>
             <p><i>Independent Weather Engine (V20)</i></p>
+            <p style="color: var(--accent-color);"><b>2 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -487,6 +534,7 @@
         <section id="weather-widget" class="repo-section">
             <h2>weather-widget</h2>
             <p><i>No description found.</i></p>
+            <p style="color: var(--accent-color);"><b>42 files catalogued in this repository</b></p>
             <table>
                 <thead>
                     <tr>
@@ -513,7 +561,35 @@
                 }
             });
         }
+
+        function showRepo(repoId, element) {
+            // Hide welcome message
+            document.getElementById('welcome').style.display = 'none';
+            
+            // Hide all sections
+            document.querySelectorAll('.repo-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Remove active class from all links
+            document.querySelectorAll('.repo-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            document.getElementById(repoId).classList.add('active');
+            
+            // Set the clicked link as active
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // On mobile, automatically scroll down to the main content area so they see the table
+            if (window.innerWidth <= 768) {
+                const mainEl = document.querySelector('main');
+                mainEl.scrollTo(0, 0);
+            }
+        }
     </script>
 </body>
 </html>
-    
